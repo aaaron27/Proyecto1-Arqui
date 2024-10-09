@@ -130,15 +130,14 @@
     ; parametro 1: longitud Palabra
     ; parametro 2: retorna guiones "_____"
     %macro generarGuion 2
-        mov al, %1
-        xor edi, edi
-        LOOP:
-            cmp al, 0
-            je fin
+        mov eax, %1
 
-            add edi, '_'
-
-            dec al
-        fin:
-            mov %2, edi
+    loop:
+        cmp eax, 0
+        je terminar
+        mov byte [%2], '_'
+        inc %2
+        dec eax
+        jmp loop
+    terminar:
     %endmacro
