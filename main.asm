@@ -10,17 +10,15 @@ section .data
         sys_execve      EQU     11
         stdin           EQU 	0
         stdout          EQU 	1
-    ;--Variables de Impresion en Pantalla--
+    ;--Variables de Impresion en Pantalla--f
 
-    buffer db 255
-    totalPalabras db 10
 
     ; ruta para el almacenamiento de las palabras
     palabrasAltoArchivo db "./palabras/palabrasAlto.txt", 0
     palabrasMedioArchivo db "./palabras/palabrasMedio.txt", 0
     palabrasBajoArchivo db "./palabras/palabrasBajo.txt", 0
 
-    palabraLen db 9
+    totalPalabras db 10
 
     ; mensajes durante el juego
     iniciarJuego db "1. Iniciar Juego", 10, "2. Salir", 10, 0
@@ -38,14 +36,20 @@ section .bss
     turnosDesponibles resb 1                ; cantidad de turnos por juego
     palabra resb 255                        ; palabra seleccionada para cada juego
     indicePalabra resb 1
-    palabraGuion resb 255
+    palabraGuion resb 256
+    palabraLen resb 1
 
 section .text
     global _start
 
 _start:
-    generarGuion palabraLen, palabraGuion
-    imprimeEnPantalla palabraGuion, 255
+    ; Generar guiones bajos segun la longitud
+    ;movzx ecx, byte [palabraLen]          ; Cargar la longitud en ecx correctamente
+    ;lea edi, [palabraGuion]
+    ;generarGuion ecx, edi
+
+    imprimeEnPantalla palabraGuion, palabraLen
+
     imprimeEnPantalla iniciarJuego, iniciarJuegoLen
     leeTeclado
     capturaNumero numero
@@ -94,7 +98,6 @@ seleccionaPalabraAleatoria:
     xor ecx, ecx
     xor edi, edi
     mov esi, contenidoArchivo
-    mov edx, 1
     mov eax, [indicePalabra]
 
 LEER:
@@ -107,12 +110,15 @@ LEER:
     cmp ecx, eax
     jne SIGUIENTE_PALABRA
 
+CopiarPalabra:
     mov al, [esi]
     cmp al, 10
     je FIN
 
     mov [palabra + edi], al
     inc edi
+    inc esi
+    jmp CopiarPalabra
 
 SIGUIENTE_PALABRA:
     inc esi
