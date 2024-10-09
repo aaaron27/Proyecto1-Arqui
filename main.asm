@@ -29,7 +29,7 @@ section .data
 
 section .bss
     entrada resb 4
-    contenidoArchivo  	resb 255		    ; Reserva espacio para 255 bytes
+    contenidoArchivo  	resb 512		    ; Reserva espacio para 255 bytes
 
     numero resb 1                           ; almacenar opcion de seleccion
     nivelDificultad resb 1                  ; dificultad seleccionada
@@ -74,8 +74,8 @@ Juego:
 
     cmp byte [nivelDificultad], 2               ; asignacion turnos maximos
     jl DificultadBajo
-    ;je DificultadMedio
-    ;jg DificultadAlto
+    je DificultadMedio
+    jg DificultadAlto
 
 ; asignacion de los turnos disponibles inicialmente
 DificultadBajo:
@@ -83,11 +83,36 @@ DificultadBajo:
 
     abreArchivo palabrasBajoArchivo
     leeArchivo contenidoArchivo
-    ;despliegaContenidoArchivo contenidoArchivo
 
-    call seleccionaPalabraAleatoria
+    call seleccionaPalabraAleatoria ; obtenemos la palabra aleatoria
     imprimeEnPantalla palabra, 255
+
+    longitudPalabra palabra, palabraLen
+
     cierraArchivo palabrasBajoArchivo
+    jmp SALIR
+
+DificultadMedio:
+    mov byte [turnosDesponibles], 9
+
+    abreArchivo palabrasMedioArchivo
+    leeArchivo contenidoArchivo
+    call seleccionaPalabraAleatoria ; obtenemos la palabra aleatoria
+    imprimeEnPantalla palabra, 255
+    cierraArchivo palabrasMedioArchivo
+
+    jmp SALIR
+
+DificultadAlto:
+    mov byte [turnosDesponibles], 9
+
+    abreArchivo palabrasAltoArchivo
+    leeArchivo contenidoArchivo
+    despliegaContenidoArchivo contenidoArchivo
+
+    call seleccionaPalabraAleatoria ; obtenemos la palabra aleatoria
+    ;imprimeEnPantalla palabra, 255
+    cierraArchivo palabrasAltoArchivo
 
     jmp SALIR
 
