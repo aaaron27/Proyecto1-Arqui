@@ -141,3 +141,19 @@
         jmp loop
     terminar:
     %endmacro
+    ; par 1: palabra
+    ; par 2: memoria
+    %macro longitudPalabra 2
+        mov esi, %1
+        xor ecx, ecx
+
+    loop:
+        cmp byte [esi], 0
+        je fin
+
+        inc ecx
+        inc esi
+        jmp loop
+    fin:
+        mov [%2], ecx
+    %endmacro
